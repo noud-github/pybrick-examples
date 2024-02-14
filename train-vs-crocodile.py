@@ -24,7 +24,7 @@ except OSError as ex:
 id = device.info()["id"]
 
 if id == 2:
-    print("train")
+    print("Train Motor")
     crocodile=False
     # Try to get the device, if it is attached.
     try:
@@ -36,10 +36,11 @@ if id == 2:
         else:
             raise
     if (device.info()["id"] == 2):
+        print("Dual Motor")
         dual_motor=True
 
 elif id == 46:
-    print("crocodile")
+    print("Crocodile Motor")
     crocodile=True
 
 
