@@ -22,22 +22,24 @@ except OSError as ex:
 
 # Get the device id
 id = device.info()["id"]
-
+device2 = None
 if id == 2:
     print("Train Motor")
     crocodile=False
     # Try to get the device, if it is attached.
     try:
-        device = PUPDevice(Port.B)
+        device2 = PUPDevice(Port.B)
     except OSError as ex:
         if ex.args[0] == ENODEV:
             # No device found on this port.
             print("Single Motor")
         else:
             raise
-    if (device.info()["id"] == 2):
-        print("Dual Motor")
-        dual_motor=True
+
+    if device2 is not None :
+        if device2.info()["id"] == 2:
+            print("Dual Motor")
+            dual_motor=True
 
 elif id == 46:
     print("Crocodile Motor")
