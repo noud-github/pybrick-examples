@@ -1,4 +1,4 @@
-from pybricks.hubs import TechnicHub
+from pybricks.hubs import CityHub
 from pybricks.pupdevices import Motor, DCMotor, Remote
 from pybricks.parameters import Button, Color, Direction, Port, Side, Stop
 from pybricks.robotics import DriveBase
@@ -28,7 +28,7 @@ if id == 2:
     crocodile=False
     # Try to get the device, if it is attached.
     try:
-        device = PUPDevice(Port.C)
+        device = PUPDevice(Port.B)
     except OSError as ex:
         if ex.args[0] == ENODEV:
             # No device found on this port.
@@ -56,7 +56,7 @@ if crocodile :
 else:
     train = DCMotor(Port.A,Direction.CLOCKWISE)
     if dual_motor:
-        train2 = DCMotor(Port.C,Direction.COUNTERCLOCKWISE)
+        train2 = DCMotor(Port.B,Direction.COUNTERCLOCKWISE)
 
 remote = Remote()
 
