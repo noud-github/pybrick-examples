@@ -22,6 +22,13 @@ last_color = Color.BLACK
 hub.light.on(Color.CYAN)
 test.light(Color.GREEN)
 wait(1000)
+
+test.drive( Port.A,  50)
+
+wait (2000)
+
+test.drive( Port.A,  0)
+
 while True:
     # If the measured color changed, play choo choo
     # and set the hub and train light to match.
