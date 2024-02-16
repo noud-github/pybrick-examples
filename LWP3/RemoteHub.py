@@ -23,7 +23,6 @@ CITY_HUB_LED_PORT = 0x32
 PORTS = {
     Port.A: 0x00,
     Port.B: 0x01
-
 }
 
 
@@ -46,10 +45,9 @@ PORT_OUTPUT_COMAND = 0x81
 PORT_OUTPUT_COMAND_SUB_COMMAND_DIRECT_WRITE = 0x51
 PORT_INFORMATION_REQEST = 0x21
 
-
 class Remote_Technic_Hub():
     """Class to connect to the Hub and send commands to it."""
-
+    
     def __init__(self):
         """Scans for a hub connect, and prepare it to receive commands."""
         print("Searching for the Hub. Make sure it is on.")
@@ -59,23 +57,24 @@ class Remote_Technic_Hub():
         #self.device.write(bytes([0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]))
         print("Connected!")
         wait(500)
+        self.light = _Light(TECHNIC_HUB_LED_PORT, self.device)
 
     # def choo_choo(self):
     #     """Plays the choo choo sound."""
     #     self.device.write(bytes([0x08, 0x00, 0x81, 0x01, 0x11, 0x51, 0x01, 0x09]))
 
-    def light(self, color):
-        """Turns on the train light at the requested color."""
-        if color not in COLORS:
-            return
-            #0x32 port number
-        command = CommandBuilder( PORT_OUTPUT_COMAND, Port = TECHNIC_HUB_LED_PORT, SubCommand = PORT_OUTPUT_COMAND_SUB_COMMAND_DIRECT_WRITE,  PayloadValue = COLORS[color])
+    # def light(self, color):
+    #     """Turns on the train light at the requested color."""
+    #     if color not in COLORS:
+    #         return
+    #         #0x32 port number
+    #     command = _CommandBuilder( PORT_OUTPUT_COMAND, Port = TECHNIC_HUB_LED_PORT, SubCommand = PORT_OUTPUT_COMAND_SUB_COMMAND_DIRECT_WRITE,  PayloadValue = COLORS[color])
 
-        self.device.write(bytes(command))  
-        #self.device.write(bytes([0x08, 0x00, 0x81, TECHNIC_HUB_LED_PORT, 0x11, 0x51, 0x00, COLORS[color]]))
+    #     self.device.write(bytes(command))  
+    #     #self.device.write(bytes([0x08, 0x00, 0x81, TECHNIC_HUB_LED_PORT, 0x11, 0x51, 0x00, COLORS[color]]))
 
     def drive(self, port, power):
-        command = CommandBuilder( PORT_OUTPUT_COMAND, Port = PORTS[port], SubCommand = PORT_OUTPUT_COMAND_SUB_COMMAND_DIRECT_WRITE,  PayloadValue = power)
+        command = _CommandBuilder( PORT_OUTPUT_COMAND, Port = PORTS[port], SubCommand = PORT_OUTPUT_COMAND_SUB_COMMAND_DIRECT_WRITE,  PayloadValue = power)
 
         self.device.write(bytes(command))  
 
@@ -132,7 +131,7 @@ class RemoteMario():
         #self.device.write(bytes([0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]))
         print("Connected!")
         wait(500)
-
+   
     # def choo_choo(self):
     #     """Plays the choo choo sound."""
     #     self.device.write(bytes([0x08, 0x00, 0x81, 0x01, 0x11, 0x51, 0x01, 0x09]))
@@ -152,7 +151,7 @@ class RemoteMario():
     #     self.device.write(bytes([0x08, 0x00, 0x81, 0x00, 0x01, 0x51, 0x00, power]))
 
 
-class CommandBuilder():
+class _CommandBuilder():
     def __init__(self, MessageType, Port = None, PayloadValue = None, SubCommand = None, Mode = 0x00):
         # Header:
         # lenght
@@ -187,3 +186,20 @@ class CommandBuilder():
 
     # def __str__(self):
     #     return ','.join(self.list)
+
+
+class _Light():
+    def __init__(self, port, device):
+        self.port = port
+        self.device = device
+    def on(self,color):
+        if color not in COLORS:
+            return
+        command = _CommandBuilder( PORT_OUTPUT_COMAND, Port = self.port, SubCommand = PORT_OUTPUT_COMAND_SUB_COMMAND_DIRECT_WRITE,  PayloadValue = COLORS[color])
+        self.device.write(bytes(command))  
+    def off(self):
+        command = _CommandBuilder( PORT_OUTPUT_COMAND, Port = self.port, SubCommand = PORT_OUTPUT_COMAND_SUB_COMMAND_DIRECT_WRITE,  PayloadValue = 0x00)
+        self.device.write(bytes(command))  
+        
+
+
