@@ -4,7 +4,7 @@ from pybricks.parameters import Color, Port
 from pybricks.tools import wait
 
 # This imports the DuploTrain from the duplo.py file.
-from RemoteHub import Remote_Technic_Hub, CommandBuilder
+from RemoteHub import Remote_Technic_Hub
 
 print("start")
 
@@ -20,8 +20,11 @@ test = Remote_Technic_Hub()
 
 last_color = Color.BLACK
 hub.light.on(Color.CYAN)
-test.light(Color.GREEN)
+test.light.on(Color.GREEN)
 wait(1000)
+
+test.light.on(Color.RED)
+
 
 test.drive( Port.A,  50)
 
@@ -35,10 +38,11 @@ while True:
     color = sensor.color()
     if last_color != color:
         last_color = color
+        
         #if color != Color.NONE:
         #    train.choo_choo()
         hub.light.on(color)
-        test.light(color)
+        test.light.on(color)
         
     
     
