@@ -45,115 +45,54 @@ PORT_OUTPUT_COMAND = 0x81
 PORT_OUTPUT_COMAND_SUB_COMMAND_DIRECT_WRITE = 0x51
 PORT_INFORMATION_REQEST = 0x21
 
-class Remote_Technic_Hub():
-    """Class to connect to the Hub and send commands to it."""
-    
-    def __init__(self):
+class RemoteHub():
+    def __init__(self, hub_kind, name=None, timeout=10000):
         """Scans for a hub connect, and prepare it to receive commands."""
         print("Searching for the Hub. Make sure it is on.")
-        self.device = LWP3Device(LEGO_TECHNIC_HUB_ID, name=None, timeout=10000)
-        
+        self.device = LWP3Device(hub_kind, name=name, timeout=timeout)
+        self.battery = _Battery(self.device)
+
+class RemoteTechnicHub(RemoteHub):
+    """Class to connect to the Hub and send commands to it."""
+    def __init__(self, name=None, timeout=10000):
+        RemoteHub.__init__(self, LEGO_TECHNIC_HUB_ID, name, timeout)
         #self.device.write(bytes([0x0a, 0x00, 0x41, TECHNIC_HUB_LED_PORT, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01]))
         #self.device.write(bytes([0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]))
         print("Connected!")
         wait(500)
         self.light = _Light(TECHNIC_HUB_LED_PORT, self.device)
 
-    # def choo_choo(self):
-    #     """Plays the choo choo sound."""
-    #     self.device.write(bytes([0x08, 0x00, 0x81, 0x01, 0x11, 0x51, 0x01, 0x09]))
-
-    # def light(self, color):
-    #     """Turns on the train light at the requested color."""
-    #     if color not in COLORS:
-    #         return
-    #         #0x32 port number
-    #     command = _CommandBuilder( PORT_OUTPUT_COMAND, Port = TECHNIC_HUB_LED_PORT, SubCommand = PORT_OUTPUT_COMAND_SUB_COMMAND_DIRECT_WRITE,  PayloadValue = COLORS[color])
-
-    #     self.device.write(bytes(command))  
-    #     #self.device.write(bytes([0x08, 0x00, 0x81, TECHNIC_HUB_LED_PORT, 0x11, 0x51, 0x00, COLORS[color]]))
-
-    def drive(self, port, power):
-        command = _CommandBuilder( PORT_OUTPUT_COMAND, Port = PORTS[port], SubCommand = PORT_OUTPUT_COMAND_SUB_COMMAND_DIRECT_WRITE,  PayloadValue = power)
-
-        self.device.write(bytes(command))  
-
-    # def drive(self, power):
-    #     """Drives at a given "power" level between -100 and 100."""
-    #     power = max(-100, min(power, 100))
-    #     if power < 0:
-    #         power += 256
-    #     self.device.write(bytes([0x08, 0x00, 0x81, 0x00, 0x01, 0x51, 0x00, power]))
-
+    def ports():
+        return [Port.A,Port.B,Port.C,Port.D]
+    
 class Remote_City_Hub():
     """Class to connect to the Hub and send commands to it."""
-
-    def __init__(self):
-        """Scans for a hub connect, and prepare it to receive commands."""
-        print("Searching for the Hub. Make sure it is on.")
-        self.device = LWP3Device(LEGO_CITY_HUB_ID, name=None, timeout=10000)
-        
+    def __init__(self, name=None, timeout=10000):
+        RemoteHub.__init__(self, LEGO_TECHNIC_HUB_ID, name, timeout)
         #self.device.write(bytes([0x0a, 0x00, 0x41, TECHNIC_HUB_LED_PORT, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01]))
         #self.device.write(bytes([0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]))
         print("Connected!")
         wait(500)
+        self.light = _Light(CITY_HUB_LED_PORT_HUB_LED_PORT, self.device)
 
-    # def choo_choo(self):
-    #     """Plays the choo choo sound."""
-    #     self.device.write(bytes([0x08, 0x00, 0x81, 0x01, 0x11, 0x51, 0x01, 0x09]))
-
-    def light(self, color):
-        """Turns on the train light at the requested color."""
-        if color not in COLORS:
-            return
-            #0x32 port number
-            
-        self.device.write(bytes([0x08, 0x00, 0x81, CITY_HUB_LED_PORT, 0x11, 0x51, 0x00, COLORS[color]]))
-
-    # def drive(self, power):
-    #     """Drives at a given "power" level between -100 and 100."""
-    #     power = max(-100, min(power, 100))
-    #     if power < 0:
-    #         power += 256
-    #     self.device.write(bytes([0x08, 0x00, 0x81, 0x00, 0x01, 0x51, 0x00, power]))
-
-
+    def ports():
+        return [Port.A,Port.B,]
+    
 
 class RemoteMario():
     """Class to connect to the Hub and send commands to it."""
-
-    def __init__(self):
-        """Scans for a hub connect, and prepare it to receive commands."""
-        print("Searching for the Hub. Make sure it is on.")
-        self.device = LWP3Device(LEGO_TECHNIC_HUB_ID, name=None, timeout=10000)
-        
-        self.device.write(bytes([0x0a, 0x00, 0x41, 0x32, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01]))
+    def __init__(self, name=None, timeout=10000):
+        RemoteHub.__init__(self, LEGO_MARIO_HUB_ID, name, timeout)
+        #self.device.write(bytes([0x0a, 0x00, 0x41, TECHNIC_HUB_LED_PORT, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01]))
         #self.device.write(bytes([0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]))
         print("Connected!")
         wait(500)
    
-    # def choo_choo(self):
-    #     """Plays the choo choo sound."""
-    #     self.device.write(bytes([0x08, 0x00, 0x81, 0x01, 0x11, 0x51, 0x01, 0x09]))
-
-    def light(self, color):
-        """Turns on the train light at the requested color."""
-        if color not in COLORS:
-            return
-          
-        #self.device.write(bytes([0x08, 0x00, 0x81, 0x32, 0x11, 0x51, 0x00, COLORS[color]]))
-       
-    # def drive(self, power):
-    #     """Drives at a given "power" level between -100 and 100."""
-    #     power = max(-100, min(power, 100))
-    #     if power < 0:
-    #         power += 256
-    #     self.device.write(bytes([0x08, 0x00, 0x81, 0x00, 0x01, 0x51, 0x00, power]))
-
+   
 
 class _CommandBuilder():
     def __init__(self, MessageType, Port = None, PayloadValue = None, SubCommand = None, Mode = 0x00):
-        # Header:
+        # setup Header:
         # lenght
         # Hub ID NOT USE Always set to 0x00
         # Message Type
@@ -170,10 +109,9 @@ class _CommandBuilder():
             self.list.append(Mode)
             # payload value
             self.list.append(PayloadValue)
-            
-           
+       
             #print(len(self.list))
-            
+        # set correct lenght        
         self.list[0] = len(self.list)  
 
         #print(len(self.list))          
@@ -184,8 +122,26 @@ class _CommandBuilder():
     def __bytes__(self):
         return bytes(self.list)
 
-    # def __str__(self):
-    #     return ','.join(self.list)
+
+class RemoteMotor():
+    def __init__(self, port, remotehub):
+        self.port = port
+        self.remotehub = remotehub
+    def angle():
+        return 0
+    def dc(self, power):
+        command = _CommandBuilder( PORT_OUTPUT_COMAND, Port = PORTS[self.port], SubCommand = PORT_OUTPUT_COMAND_SUB_COMMAND_DIRECT_WRITE,  PayloadValue = power)
+
+        self.remotehub.device.write(bytes(command))  
+
+
+class _Battery():
+    def __init__(self, device):
+        self.device = device
+    def voltage(self):
+        return 50
+    def current(self):
+        return 50 
 
 
 class _Light():
@@ -201,5 +157,3 @@ class _Light():
         command = _CommandBuilder( PORT_OUTPUT_COMAND, Port = self.port, SubCommand = PORT_OUTPUT_COMAND_SUB_COMMAND_DIRECT_WRITE,  PayloadValue = 0x00)
         self.device.write(bytes(command))  
         
-
-
