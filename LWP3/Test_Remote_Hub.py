@@ -4,7 +4,9 @@ from pybricks.parameters import Color, Port
 from pybricks.tools import wait
 
 # This imports the DuploTrain from the duplo.py file.
-from RemoteHub import RemoteHub
+from RemoteHub import Remote_Technic_Hub, CommandBuilder
+
+print("start")
 
 # Initialize the hub and devices. You can use any other hub too.
 hub = TechnicHub()
@@ -12,7 +14,7 @@ hub = TechnicHub()
 sensor = ColorDistanceSensor(Port.A)
 
 # Connect to the train.
-test = RemoteHub()
+test = Remote_Technic_Hub()
 
 # These variables are used to monitor the angle and color state.
 
