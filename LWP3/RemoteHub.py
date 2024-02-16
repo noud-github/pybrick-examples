@@ -1,5 +1,5 @@
 from pybricks.iodevices import LWP3Device
-from pybricks.parameters import Color
+from pybricks.parameters import Color, Port
 from pybricks.tools import wait
 
 # Device identifier for the Hub.
@@ -20,6 +20,13 @@ TECHNIC_HUB_LED_PORT = 0x32
 # quess:
 CITY_HUB_LED_PORT = 0x32
 
+PORTS = {
+    Port.A: 0x00,
+    Port.B: 0x01
+
+}
+
+
 # Mapping that converts colors to LEGO color identifiers.
 COLORS = {
     Color.NONE: 0,
@@ -36,6 +43,7 @@ COLORS = {
 }
 
 PORT_OUTPUT_COMAND = 0x81
+PORT_OUTPUT_COMAND_SUB_COMMAND_DIRECT_WRITE = 0x51
 PORT_INFORMATION_REQEST = 0x21
 
 
@@ -61,10 +69,15 @@ class Remote_Technic_Hub():
         if color not in COLORS:
             return
             #0x32 port number
-        command = CommandBuilder( PORT_OUTPUT_COMAND, port = TECHNIC_HUB_LED_PORT, payload_value = COLORS[color])
+        command = CommandBuilder( PORT_OUTPUT_COMAND, Port = TECHNIC_HUB_LED_PORT, SubCommand = PORT_OUTPUT_COMAND_SUB_COMMAND_DIRECT_WRITE,  PayloadValue = COLORS[color])
 
         self.device.write(bytes(command))  
         #self.device.write(bytes([0x08, 0x00, 0x81, TECHNIC_HUB_LED_PORT, 0x11, 0x51, 0x00, COLORS[color]]))
+
+    def drive(self, port, power):
+        command = CommandBuilder( PORT_OUTPUT_COMAND, Port = PORTS[port], SubCommand = PORT_OUTPUT_COMAND_SUB_COMMAND_DIRECT_WRITE,  PayloadValue = power)
+
+        self.device.write(bytes(command))  
 
     # def drive(self, power):
     #     """Drives at a given "power" level between -100 and 100."""
@@ -140,7 +153,7 @@ class RemoteMario():
 
 
 class CommandBuilder():
-    def __init__(self, MessageType, port = None, payload_value = None):
+    def __init__(self, MessageType, Port = None, PayloadValue = None, SubCommand = None, Mode = 0x00):
         # Header:
         # lenght
         # Hub ID NOT USE Always set to 0x00
@@ -149,18 +162,16 @@ class CommandBuilder():
 
         if MessageType == PORT_OUTPUT_COMAND:
             # port
-            self.list.append(port)
+            self.list.append(Port)
             # Startup and Completion Information 0001 0001 (0x11) Execute immediately Command feedback (Status)
             self.list.append(0x11)
             # sub command
-            self.list.append(0x51)
+            self.list.append(SubCommand)
             # payload mode
-            self.list.append(0x00)
+            self.list.append(Mode)
             # payload value
-            self.list.append(0x00)
-            # set payload_value value
-            if payload_value is not None:
-                self.list[7] = payload_value
+            self.list.append(PayloadValue)
+            
            
             #print(len(self.list))
             
