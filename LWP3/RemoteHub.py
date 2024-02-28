@@ -50,7 +50,7 @@ class RemoteHub():
         """Scans for a hub connect, and prepare it to receive commands."""
         print("Searching for the Hub. Make sure it is on.")
         self.device = LWP3Device(hub_kind, name=name, timeout=timeout)
-        self.battery = _Battery(self.device)
+        #self.battery = _Battery(self.device)
 
 class RemoteTechnicHub(RemoteHub):
     """Class to connect to the Hub and send commands to it."""
@@ -84,7 +84,7 @@ class RemoteMario():
     def __init__(self, name=None, timeout=10000):
         RemoteHub.__init__(self, LEGO_MARIO_HUB_ID, name, timeout)
         #self.device.write(bytes([0x0a, 0x00, 0x41, TECHNIC_HUB_LED_PORT, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01]))
-        #self.device.write(bytes([0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]))
+        self.device.write(bytes([0x0a, 0x00, 0x41, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x01]))
         print("Connected!")
         wait(500)
    
